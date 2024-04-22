@@ -8,6 +8,7 @@ namespace csharp_biblioteca
 {
     internal class User
     {
+        // Proprietà classe User
         public string LastName { get; set; }
         public string Name { get; set; }
         public string Email { get; set; }
