@@ -6,10 +6,11 @@ using System.Threading.Tasks;
 
 namespace csharp_biblioteca
 {
-    internal class Author
+    public class Author
     {
-        public string Nome { get; set; }
-        public string Cognome { get; set; }
+        // Proptietà classe Author
+        public string Name { get; set; }
+        public string LastName { get; set; }
     }
 
 }
