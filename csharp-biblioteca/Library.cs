@@ -2,94 +2,97 @@
 {
     public class Library
     {
-        public List<Document> Documenti { get; set; }
-        public List<User> Utenti { get; set; }
-        public List<LendedDocument> Prestiti { get; set; }
+        public List<Document> Documents { get; private set; }
+        public List<User> Users { get; private set; }
+        public List<LendedDocument> Lendings { get; private set; }
 
         public Library()
         {
-            Documenti = new List<Document>();
-            Utenti = new List<User>();
-            Prestiti = new List<LendedDocument>();
+            Documents = new List<Document>();
+            Users = new List<User>();
+            Lendings = new List<LendedDocument>();
         }
 
-        public void AddDocument(Document documento)
+        public void AddDocument(Document document)
         {
-            Documenti.Add(documento);
+            Documents.Add(document);
         }
 
-        public void AddUser(User utente)
+        public void AddUser(User user)
         {
-            Utenti.Add(utente);
+            Users.Add(user);
         }
 
-        public void RegisterLendedDocument(User utente, Document documento, DateTime dataInizio, DateTime dataFine)
+        public void RegisterLending(User user, Document document, DateTime startDate, DateTime endDate)
         {
-            LendedDocument prestito = new LendedDocument
+            LendedDocument lending = new LendedDocument
             {
-                Utente = utente,
-                Documento = documento,
-                DataInizio = dataInizio,
-                DataFine = dataFine
+                User = user,
+                Document = document,
+                StartDate = startDate,
+                EndDate = endDate
             };
-            Prestiti.Add(prestito);
+            Lendings.Add(lending);
         }
 
-        public List<LendedDocument> FindLendedDocumentUsingUser(string cognome, string nome)
+        public List<LendedDocument> FindLendingsByUser(string lastName, string firstName)
         {
-            return Prestiti.FindAll(p => p.Utente.LastName == cognome && p.Utente.Name == nome);
+            return Lendings.FindAll(l => l.User.LastName == lastName && l.User.Name == firstName);
         }
 
-        public Document FindLendedDocumentUsingCode(string codice)
+        public Document FindDocumentByCode(string code)
         {
-            return Documenti.Find(d => d.Code == codice);
+            return Documents.Find(d => d.Code.ToLower() == code.ToLower());
         }
 
-        public List<Document> FindLendedDocumentUsingTitle(string titolo)
+
+        public List<Document> FindDocumentsByTitle(string title)
         {
-            return Documenti.FindAll(d => d.Title.Contains(titolo));
+            return Documents.FindAll(d => d.Title.Contains(title));
         }
-        public void PrintAllLendedDocuments()
+
+        public void PrintAllLendings()
         {
-            Console.WriteLine($"================================================================================");
+            Utility.Divider();
             Console.WriteLine($"\n-- Lista documenti prestati --");
             Console.WriteLine();
-            foreach (LendedDocument prestito in Prestiti)
+            foreach (LendedDocument lending in Lendings)
             {
-                if (prestito.Documento is Book)
+                if (lending.Document is Book book)
                 {
-                    Book libro = prestito.Documento as Book;
-                    Console.WriteLine($"Tipo documento: Libro");
-                    Console.WriteLine($"Titolo: {libro.Title}");
-                    Console.WriteLine($"Numero di pagine: {libro.NumberOfPages}");
+                    Console.WriteLine($"* Book: {book.Title} ({book.Year})");
+                    Console.WriteLine($"  Code: {book.Code}");
+                    Console.WriteLine($"  Sector: {book.Sector}, Shelf: {book.Shelf}");
+                    Console.WriteLine($"  Number of Pages: {book.NumberOfPages}");
+                    Console.WriteLine($"  Author: {book.Author.Name} {book.Author.LastName}");
                 }
-                else if (prestito.Documento is DVD)
+                else if (lending.Document is DVD dvd)
                 {
-                    DVD dvd = prestito.Documento as DVD;
-                    Console.WriteLine($"Tipo documento: DVD");
-                    Console.WriteLine($"Titolo: {dvd.Title}");
-                    Console.WriteLine($"Durata: {dvd.Duration} minuti");
+                    Console.WriteLine($"* DVD: {dvd.Title} ({dvd.Year})");
+                    Console.WriteLine($"  Code: {dvd.Code}");
+                    Console.WriteLine($"  Sector: {dvd.Sector}, Shelf: {dvd.Shelf}");
+                    Console.WriteLine($"  Duration: {dvd.Duration} minutes");
+                    Console.WriteLine($"  Author: {dvd.Author.Name} {dvd.Author.LastName}");
                 }
                 else
                 {
-                    Console.WriteLine($"Tipo documento sconosciuto");
+                    Console.WriteLine($"Unknown document type");
                 }
-                Console.WriteLine($"Prestato a: {prestito.Utente.Name} {prestito.Utente.LastName}");
-                Console.WriteLine($"Data inizio: {prestito.DataInizio.ToShortDateString()}  \nData fine: {prestito.DataFine.ToShortDateString()}");
+                Console.WriteLine($"  Lent to: {lending.User.Name} {lending.User.LastName}");
+                Console.WriteLine($"  Start Date: {lending.StartDate.ToShortDateString()}");
+                Console.WriteLine($"  End Date: {lending.EndDate.ToShortDateString()}");
                 Console.WriteLine();
             }
         }
-        public void RemoveLendedDocument(Document document, string nome, string cognome)
+
+        public void RemoveLending(Document document, string firstName, string lastName)
         {
-            // Find the lending record to remove
-            LendedDocument lendingToRemove = Prestiti.FirstOrDefault(p => p.Documento == document && p.Utente.Name == nome && p.Utente.LastName == cognome);
+            LendedDocument lendingToRemove = Lendings.Find(l => l.Document == document && l.User.Name == firstName && l.User.LastName == lastName);
 
             if (lendingToRemove != null)
             {
-                // Remove the lending record
-                Prestiti.Remove(lendingToRemove);
+                Lendings.Remove(lendingToRemove);
             }
         }
-
     }
 }

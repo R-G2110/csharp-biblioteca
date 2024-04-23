@@ -8,9 +8,9 @@ namespace csharp_biblioteca
 {
     public class LendedDocument
     {
-        public User Utente { get; set; }
-        public Document Documento { get; set; }
-        public DateTime DataInizio { get; set; }
-        public DateTime DataFine { get; set; }
+        public User User { get; set; }
+        public Document Document { get; set; }
+        public DateTime StartDate { get; set; }
+        public DateTime EndDate { get; set; }
     }
 }
